@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "nombre": "Luis",
+    "apellido": "Bueno",
+    "email": "luisb@gmail.com",
+    "telefono": "0959031617",
+    "ciudad": "Naranjal"
+  },
+  {
+    "id": 2,
+    "nombre": "Nancy",
+    "apellido": "Bueno",
+    "email": "nancyb@gmail.com",
+    "telefono": "095902394",
+    "ciudad": "Naranjal"
+  },
+  {
+    "id": 3,
+    "nombre": "Joel",
+    "apellido": "Rodriguez",
+    "email": "joelr@gmail.com",
+    "telefono": "983947343",
+    "ciudad": "Guayaquil"
+  }
+]

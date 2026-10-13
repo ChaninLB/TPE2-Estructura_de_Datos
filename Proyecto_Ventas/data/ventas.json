@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1,
+    "cliente_id": 1,
+    "producto_id": 4,
+    "cantidad": 1,
+    "precio_unitario": 1200.0,
+    "fecha": "2026-10-08"
+  },
+  {
+    "id": 2,
+    "cliente_id": 1,
+    "producto_id": 2,
+    "cantidad": 1,
+    "precio_unitario": 90.0,
+    "fecha": "2026-10-08"
+  },
+  {
+    "id": 3,
+    "cliente_id": 3,
+    "producto_id": 1,
+    "cantidad": 3,
+    "precio_unitario": 300.0,
+    "fecha": "2026-10-08"
+  },
+  {
+    "id": 4,
+    "cliente_id": 3,
+    "producto_id": 4,
+    "cantidad": 1,
+    "precio_unitario": 1200.0,
+    "fecha": "2026-10-10"
+  },
+  {
+    "id": 5,
+    "cliente_id": 2,
+    "producto_id": 2,
+    "cantidad": 5,
+    "precio_unitario": 90.0,
+    "fecha": "2026-10-10"
+  }
+]
