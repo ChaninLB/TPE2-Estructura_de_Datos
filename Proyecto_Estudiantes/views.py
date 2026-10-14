@@ -134,7 +134,7 @@ class EstudianteController(CrudBase):
 
     def actualizar(self, id_estudiante, datos):
         estudiante = self.obtener(id_estudiante)
-        if estudiantete is None:
+        if estudiante is None:
             return False, f"No existe un estudiante con id {id_estudiante}"
         if not datos:
             return False, "No se indicó ningún cambio"
