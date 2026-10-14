@@ -1,0 +1,107 @@
+#para agregar la nota en lista
+#models---------------------------------------------------
+class Matricula(ModeloBase):
+    """Matrícula: un estudiante, una materia, un periodo y una lista de notas acumuladas."""
+
+    def __init__(self, id_registro, estudiante_id, materia_id, periodo, nota=None, fecha="", notas=None):
+        super().__init__(id_registro)
+        self.estudiante_id = int(estudiante_id)
+        self.materia_id = int(materia_id)
+        self.periodo = periodo
+        
+        # Manejo de notas como lista para permitir acumulación
+        if notas is not None:
+            self.notas = [float(n) for n in notas]
+        elif nota is not None and nota != "":
+            try:
+                val = float(nota)
+                self.notas = [val] if val != 0 else []
+            except (ValueError, TypeError):
+                self.notas = []
+        else:
+            self.notas = []
+            
+        self.fecha = fecha or date.today().isoformat()
+
+    @property
+    def calificacion_total(self):
+        """Calcula la suma total de las notas acumuladas."""
+        return sum(self.notas)
+
+    def estado(self):
+        # Se evalúa en función de la calificación total acumulada
+        if self.calificacion_total >= Materia.NOTA_APROBACION:
+            return "aprobado"
+        else:
+            return "reprobado"
+
+    def a_diccionario(self):
+        datos = super().a_diccionario()
+        datos["estudiante_id"] = self.estudiante_id
+        datos["materia_id"] = self.materia_id
+        datos["periodo"] = self.periodo
+        datos["notas"] = self.notas  # Guardamos la lista de notas en el JSON
+        datos["fecha"] = self.fecha
+        return datos
+
+    def etiqueta(self):
+        notas_str = ", ".join(map(str, self.notas)) if self.notas else "Sin notas"
+        return (f"{self.fecha} · estudiante {self.estudiante_id} · "
+                f"período {self.periodo} · materia {self.materia_id} · "
+                f"Notas: [{notas_str}] · Total: {self.calificacion_total:.1f} · "
+                f"{self.estado()}")
+
+#views------------------------------------------------------------------
+
+def actualizar(self, id_matricula, datos):
+        matricula = self.obtener(id_matricula)
+        if matricula is None:
+            return False, f"No existe la matrícula {id_matricula}"
+        if not datos:
+            return False, "No se indicó ningún cambio"
+
+        if "nota" in datos:
+            if not Materia.es_nota_valida(datos["nota"]):
+                return False, f"Nota inválida: '{datos['nota']}' (debe ser entre 0 y 20)"
+            # Acumulamos la nueva nota agregándola a la lista
+            matricula.notas.append(float(datos["nota"]))
+
+        self.guardar()
+        return True, f"Matrícula {id_matricula} actualizada (Nota agregada)"
+
+def certificado(self, id_matricula):
+        matricula = self.obtener(id_matricula)
+        if matricula is None:
+            return None
+
+        estudiante = self.estudiantes.obtener(matricula.estudiante_id)
+        materia = self.materias.obtener(matricula.materia_id)
+
+        texto = f"COMPROBANTE #{matricula.id}   fecha: {matricula.fecha}\n"
+        texto += f"Estudiante : {estudiante.nombre_completo() if estudiante else 'eliminado'}\n"
+        texto += f"Materia    : {materia.nombre if materia else 'eliminado'}\n"
+        texto += "-" * 42 + "\n"
+        notas_str = ", ".join(map(str, matricula.notas)) if matricula.notas else "Ninguna"
+        texto += f"Notas registradas : [{notas_str}]\n"
+        texto += f"Calificación total: {matricula.calificacion_total:.1f}\n"
+        texto += f"Estado            : {matricula.estado()}"
+        return texto
+
+#main-------------------------------------------------------
+
+def registrar_nota():
+    imprimir_titulo("REGISTRAR / ACUMULAR NOTA")
+    mostrar_lista(matriculas.leer())
+    id_matricula = pedir_entero("\nId de la matrícula a calificar: ")
+    matricula = matriculas.obtener(id_matricula)
+    if matricula is None:
+        imprimir_error("No existe esa matrícula")
+        return pausa()
+
+    print(f"\nNotas actuales acumuladas: {matricula.notas}")
+    print(f"Calificación total actual: {matricula.calificacion_total:.1f}")
+    
+    nota_str = input("Ingrese la nueva nota a agregar: ").strip()
+    if nota_str:
+        mostrar_resultado(*matriculas.actualizar(id_matricula, {"nota": nota_str}))
+    pausa()
