@@ -35,7 +35,7 @@ def mostrar_resultado(exito, mensaje):
 
 
 def mostrar_lista(objetos, vacio="No hay registros todavía."):
-    """Sirve para clientes, productos y ventas: cada modelo sabe mostrarse."""
+    """Sirve para estudiantes, materias y matriculas: cada modelo sabe mostrarse."""
     if not objetos:
         imprimir_info(vacio)
         return
@@ -51,7 +51,7 @@ def mostrar_detalle(objeto):
 
 
 # =====================================================================
-# MENÚ DE CLIENTES
+# MENÚ DE ESTUDIANTE
 # =====================================================================
 
 def crear_estudiante():
@@ -130,7 +130,7 @@ def eliminar_estudiante():
 
 
 # =====================================================================
-# MENÚ DE materia
+# MENÚ DE MATERIAS
 # =====================================================================
 
 def crear_materia():
@@ -139,6 +139,7 @@ def crear_materia():
         "nombre": input("Nombre: "),
         "codigo": input("codigo: "),
         "creditos": input("creditos: "),
+        "cupos": input("cupos: ")
     }
     mostrar_resultado(*materias.crear(datos))
     pausa()
@@ -146,7 +147,7 @@ def crear_materia():
 
 def listar_materias():
     imprimir_titulo("MATERIAS")
-    mostrar_lista(productos.leer(), "Todavía no hay materias.")
+    mostrar_lista(materias.leer(), "Todavía no hay materias.")
     pausa()
 
 
@@ -160,18 +161,17 @@ def buscar_materia():
 def ver_materia():
     imprimir_titulo("VER MATERIA POR ID")
     materia = materias.obtener(pedir_entero("Id: "))
-    if producto is None:
+    if materia is None:
         imprimir_error("No encontrado")
     else:
         mostrar_detalle(materia)
-        imprimir_info(f"Materia con codigo: ${producto.con_iva(producto.precio):.2f}")
     pausa()
 
 
 def actualizar_materia():
     imprimir_titulo("ACTUALIZAR MATERIA")
     id_materia = pedir_entero("Id: ")
-    producto = materias.obtener(id_materia)
+    materia = materias.obtener(id_materia)
     if materia is None:
         imprimir_error("No encontrado")
         return pausa()
@@ -180,7 +180,7 @@ def actualizar_materia():
     print("Deje en blanco lo que no quiera cambiar.\n")
 
     cambios = {}
-    for campo in ("nombre", "precio", "codigo"):
+    for campo in ("nombre", "precio", "codigo", "cupos"):
         actual = getattr(materia, campo)
         nuevo = input(f"{campo.capitalize()} [{actual}]: ").strip()
         if nuevo:
@@ -220,13 +220,13 @@ def registrar_matricula():
     datos = {
         "estudiante_id": pedir_entero("\nId del estudiante: "),
         "materia_id": pedir_entero("Id de la materia: "),
-        "periodo": pedir_entero("Periodo: "),
+        "periodo": input("Periodo: "),
     }
     if None in datos.values():
         imprimir_error("Todos los datos deben ser números enteros")
         return pausa()
 
-    mostrar_resultado(*matricula.crear(datos))
+    mostrar_resultado(*matriculas.crear(datos))
     pausa()
 
 
@@ -235,10 +235,23 @@ def listar_matriculas():
     mostrar_lista(matriculas.leer(), "Todavía no hay matriculas.")
     pausa()
 
+def registrar_nota():
+    imprimir_titulo("REGISTRAR NOTA")
+    mostrar_lista(matriculas.leer())
+    id_matricula = pedir_entero("\nId de la matrícula a calificar: ")
+    matricula = matriculas.obtener(id_matricula)
+    if matricula is None:
+        imprimir_error("No existe esa matrícula")
+        return pausa()
 
-def ver_comprobante():
-    imprimir_titulo("COMPROBANTE")
-    texto = matriculas.comprobante(pedir_entero("Id de la matricula: "))
+    nota_str = input(f"Ingrese la nota actual [{matricula.nota}]: ").strip()
+    if nota_str:
+        mostrar_resultado(*matriculas.actualizar(id_matricula, {"nota": nota_str}))
+    pausa()
+
+def ver_certificado():
+    imprimir_titulo("CERTIFICADO")
+    texto = matriculas.certificado(pedir_entero("Id de la matricula: "))
     if texto is None:
         imprimir_error("No existe esa venta")
     else:
@@ -246,11 +259,11 @@ def ver_comprobante():
     pausa()
 
 
-def anular_matricula():
-    imprimir_titulo("ANULAR MATRICULA")
+def retirar_matricula():
+    imprimir_titulo("RETIRAR MATRICULA")
     id_matricula = pedir_entero("Id de la matricula: ")
     if id_matricula and confirmar("Se devolverá el cupo. ¿Confirma?"):
-        mostrar_resultado(*ventas.eliminar(id_venta))
+        mostrar_resultado(*matriculas.eliminar(id_matricula))
     else:
         imprimir_info("Operación cancelada")
     pausa()
@@ -260,11 +273,10 @@ def resumen():
     imprimir_titulo("RESUMEN")
     print(f"  Estudiantes  : {len(estudiantes.leer())}")
     print(f"  Carreras  : {', '.join(estudiantes.carreras()) or '-'}")
-    print(f"  Materias : {len(materia.leer())}")
-    bajos = Materia.cupo_bajo()
+    print(f"  Materias : {len(materias.leer())}")
+    bajos = materias.sin_cupo() if hasattr(materias, "sin_cupo") else []
     print(f"  Cupo bajo: {', '.join(p.nombre for p in bajos) or 'ninguno'}")
-    print(f"  Matricula    : {len(matricula.leer())}")
-    print(f"  Vendido   : ${ventas.total_vendido():.2f}")
+    print(f"  Matricula    : {len(matriculas.leer())}")
     pausa()
 
 
@@ -295,8 +307,9 @@ MENU_MATERIAS = {
 MENU_MATRICULAS = {
     "1": ("Registrar matricula", registrar_matricula),
     "2": ("Ver todas", listar_matriculas),
-    "3": ("Ver comprobante", ver_comprobante),
-    "4": ("Anular matricula", anular_matricula),
+    "3": ("Registrar/Cambiar nota", registrar_nota),
+    "4": ("Ver certificado", ver_certificado),
+    "5": ("Anular matricula", retirar_matricula),
     "0": ("Volver", None),
 }
 
