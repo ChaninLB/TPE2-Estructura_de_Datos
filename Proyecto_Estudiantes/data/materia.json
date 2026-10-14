@@ -1,0 +1,44 @@
+[
+  {
+    "id": 1,
+    "nombre": "Calculo",
+    "codigo": "010",
+    "creditos": 2,
+    "cupos": 4
+  },
+  {
+    "id": 2,
+    "nombre": "Anatomia",
+    "codigo": "002",
+    "creditos": 4,
+    "cupos": 3
+  },
+  {
+    "id": 3,
+    "nombre": "Topografia",
+    "codigo": "020",
+    "creditos": 4,
+    "cupos": 6
+  },
+  {
+    "id": 4,
+    "nombre": "Programacion",
+    "codigo": "001",
+    "creditos": 4,
+    "cupos": 4
+  },
+  {
+    "id": 5,
+    "nombre": "Bioquimica",
+    "codigo": "003",
+    "creditos": 3,
+    "cupos": 5
+  },
+  {
+    "id": 6,
+    "nombre": "Fisica",
+    "codigo": "005",
+    "creditos": 4,
+    "cupos": 7
+  }
+]

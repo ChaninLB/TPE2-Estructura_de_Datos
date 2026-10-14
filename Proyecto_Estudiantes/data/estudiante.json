@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "nombre": "Luis",
+    "apellido": "Bueno",
+    "email": "lbueno@gmail.com",
+    "carnet": "09LB",
+    "carrera": "Software"
+  },
+  {
+    "id": 2,
+    "nombre": "Nancy",
+    "apellido": "Bueno",
+    "email": "nbueno@gmail.com",
+    "carnet": "09NB",
+    "carrera": "Medicina"
+  },
+  {
+    "id": 3,
+    "nombre": "Joel",
+    "apellido": "Rodriguez",
+    "email": "jrodriguez@gmail.com",
+    "carnet": "09JR",
+    "carrera": "Agronomia"
+  }
+]
