@@ -131,7 +131,7 @@ class Materia(ModeloBase):
         return datos
 
     def etiqueta(self):
-        alerta = " ⚠ sin cupos" if self.hay_cupo() else ""
+        alerta = " ⚠ ncupos bajos" if not self.hay_cupo() else ""
         return f"{self.codigo} - {self.nombre} · {self.creditos} creditos · cupo {self.cupos}{alerta}"
 
 
